@@ -23,6 +23,9 @@ def about():
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
+    if 'email' in session:
+        return redirect(url_for('home'))
+
     form = SignupForm()
     if request.method == 'GET':
         return render_template("signup.html", form=form)
@@ -42,11 +45,17 @@ def signup():
 
 @app.route("/home")
 def home():
+    if 'email' not in session:
+        return redirect(url_for('signin'))
+
     return render_template("home.html")
 
 
 @app.route("/signin", methods=['GET', 'POST'])
 def signin():
+    if 'email' in session:
+        return redirect(url_for('home'))
+
     form = SigninForm()
     if request.method == 'GET':
         return render_template("signin.html", form=form)
@@ -60,6 +69,12 @@ def signin():
             return redirect(url_for('home'))
         else:
             return redirect(url_for('signin'))
+
+
+@app.route("/signout")
+def signout():
+    session.pop('email', None)
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
