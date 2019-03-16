@@ -12,3 +12,10 @@ class SignupForm(FlaskForm):
                                                      Length(min=6,
                                                             message="Your password must be longer than 6 characters")])
     submit = SubmitField('Sign up')
+
+
+class SigninForm(FlaskForm):
+    email = StringField('E-mail', validators=[DataRequired(message="Please enter your email to login"),
+                                              Email(message="Please enter your email address")])
+    password = PasswordField('Password', validators=[DataRequired(message="Please enter your password to login")])
+    submit = SubmitField('Sign in')

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from models import db, User
-from forms import SignupForm
+from forms import SignupForm, SigninForm
 
 app = Flask(__name__)
 
@@ -43,6 +43,23 @@ def signup():
 @app.route("/home")
 def home():
     return render_template("home.html")
+
+
+@app.route("/signin", methods=['GET', 'POST'])
+def signin():
+    form = SigninForm()
+    if request.method == 'GET':
+        return render_template("signin.html", form=form)
+
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        user = User.query.filter_by(email=email).first()
+        if user is not None and user.check_password(password=password):
+            session['email'] = email
+            return redirect(url_for('home'))
+        else:
+            return redirect(url_for('signin'))
 
 
 if __name__ == "__main__":
